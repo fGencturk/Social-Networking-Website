@@ -1,5 +1,5 @@
 <?php
-  require("_login.php");
+  require("./Helpers/_login.php");
   #REGISTER
   $registerError = "";
   $name = "";
@@ -41,6 +41,7 @@
             $gender = $_POST["gender"];
         }
         $pass = $_POST["pass"];
+        
         
         if($registerError == "")
         {

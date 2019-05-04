@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <?php
-    require("_auth.php");
+    require("./Helpers/_auth.php");
+    require_once './Helpers/FriendManager.php';
     
     $error = "";
     $id = $_SESSION["user"]["id"];
+    $FRIENDSTATUS = FriendManager::USER;
     if(isset($_GET["id"]))
     {
         $id = $_GET["id"];
@@ -13,7 +15,7 @@
         }
         if($error == "")
         {
-            require_once './db.php';
+            require_once './Helpers/_db.php';
             $sql = "select * from user where id = $id" ;
             $stmt = $db->query($sql, PDO::FETCH_ASSOC) ;
             $result = $stmt->fetchAll();
@@ -25,6 +27,7 @@
             else
             {
                 $result = $result[0];
+                $FRIENDSTATUS = FriendManager::CheckFriendStatus($db, $_SESSION["user"]["id"], $id);
             }
         }
     }
@@ -41,6 +44,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="assets/css/style.css"/>
         <link rel="stylesheet" href="assets/css/admin.css"/>
+        <link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css"/>
         <style>
             .box{
                 background: rgba(255,255,255,1);
@@ -59,7 +63,7 @@
 </script>
     </head>
     <body>
-        <?php require("_header.php"); ?>
+        <?php require("./Helpers/_header.php"); ?>
         <div class="main">
             <?php
                 if($error != "")
@@ -100,9 +104,54 @@
                             </tr>
                         </table>
                         <?php
-                            if($id == $_SESSION["user"]["id"])
+                        
+                            if(isset($_GET["status"]))
                             {
-                                echo '<a href="editProfile.php"><div class="btn btn-success input-lg">Edit</div></a>';
+                                if($_GET["status"] == FriendManager::NOTFRIEND)
+                                {
+                                    echo '<div class="alert alert-light text-center" role="alert">Friend has been removed.</div>';
+                                }
+                                else if($_GET["status"] == FriendManager::ISFRIEND)
+                                {
+                                    echo '<div class="alert alert-light text-center" role="alert">You are friends now.</div>';                                  
+                                }
+                                else if($_GET["status"] == FriendManager::SENTREQUEST)
+                                {
+                                    echo '<div class="alert alert-light text-center" role="alert">Friend request has been sent.</div>';                                   
+                                }
+                                else if($_GET["status"] == FriendManager::CANCELREQUEST)
+                                {
+                                    echo '<div class="alert alert-light text-center" role="alert">Friend request has been cancelled.</div>';                                   
+                                }
+                                else if($_GET["status"] == FriendManager::REJECTREQUEST)
+                                {
+                                    echo '<div class="alert alert-light text-center" role="alert">Friend request has been rejected.</div>';                                   
+                                }                                    
+                            }
+                            if($FRIENDSTATUS == FriendManager::USER)
+                            {
+                                echo '<a href="editProfile.php"><div class="btn btn-success btn-lg btn-block">Edit</div></a>';
+                            }
+                            else if($FRIENDSTATUS == FriendManager::NOTFRIEND)
+                            {
+                                echo '<div  class="alert alert-dark text-center" role="alert">You are not friends.</div>';
+                                echo '<a href="./Helpers/_requestSend.php?id='. $id .'"><div class="btn btn-success btn-lg btn-block">Add Friend</div></a>';
+                            }
+                            else if($FRIENDSTATUS == FriendManager::ISFRIEND)
+                            {
+                                echo '<div  class="alert alert-success text-center">You are friends.</div>';
+                                echo '<a href="./Helpers/_removeFriend.php?id='. $id .'"><div class="btn btn-danger input-lg btn-block">Remove Friend</div></a>';
+                            }
+                            else if($FRIENDSTATUS == FriendManager::RECEIVEDREQUEST)
+                            {
+                                echo '<div  class="alert alert-success text-center">Received friend request.</div>';
+                                echo '<a href="./Helpers/_requestAccept.php?id='. $id .'"><div class="btn btn-success btn-lg btn-block">Accept Request</div></a>';
+                                echo '<a href="./Helpers/_requestReject.php?id='. $id .'"><div class="btn btn-danger input-lg btn-block">Reject Request</div></a>';
+                            }
+                            else
+                            {
+                                echo '<div  class="alert alert-warning text-center" role="alert">Pending request.</div>';
+                                echo '<a href="./Helpers/_requestCancel.php?id='. $id .'"><div class="btn btn-danger input-lg btn-block">Cancel Request</div></a>';
                             }
                         ?>
                     </div>

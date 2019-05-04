@@ -8,7 +8,7 @@ class ImageManager {
         $result["error"] = 0;
         $result["fileName"] = "";
     
-        if ( !isset($_FILES[$imageName]["name"]) ) 
+        if ( !is_uploaded_file($_FILES[$imageName]["tmp_name"]) ) 
         {
             $result["error"] = 1;
             return $result;

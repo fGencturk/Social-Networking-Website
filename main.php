@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <?php
-    require("_auth.php");
+    require("./Helpers/_auth.php");
 ?>
 <!DOCTYPE html>
 <html>
@@ -23,7 +23,7 @@
         </style>
     </head>
     <body>
-        <?php require("_header.php"); ?>
+        <?php require("./Helpers/_header.php"); ?>
         <div class="main">
             <div class="container-fluid">
                 <div class="col-sm-3 left-sidebar">
