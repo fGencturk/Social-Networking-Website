@@ -34,37 +34,37 @@
     else
     {
         $result = $_SESSION["user"];
-    }
-    
+    }    
 ?>
 <html>
     <head>
-        <title>Facebook - The Social Network</title>
+        <meta charset="UTF-8">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="assets/css/style.css"/>
-        <link rel="stylesheet" href="assets/css/admin.css"/>
-        <link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+        <link href="css/bootstrap-grid.css" rel="stylesheet" type="text/css"/>
+        <link href="css/bootstrap.css" rel="stylesheet" type="text/css"/>
         <style>
-            .box{
-                background: rgba(255,255,255,1);
-                padding: 10px 20px;
-                border-radius: 2px;
-                box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.4);
+            .photo {
+                width:60px;
+                height:60px;
             }
-            #profilephoto{
-                width:fit-content;
+            .postphoto {
+                width:400px;
+                height:400px;
                 margin:0 auto;
             }
-            #profilephoto img {
-                width:250px;
+            .miniphoto {
+                width:30px;
+                height:30px;
             }
         </style>
-</script>
-    </head>
-    <body>
-        <?php require("./Helpers/_header.php"); ?>
-        <div class="main">
+    <title></title>
+</head>
+<body>
+<div class="container-fluid">
+    <?php require("./Helpers/_header.php"); ?>
+    <div class="row display-3 text-center justify-content-center text-primary border border-info mt-5">
+        <div class="col">
             <?php
                 if($error != "")
                 {
@@ -72,37 +72,31 @@
                     exit;                    
                 }
             ?>
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-3 left-sidebar">
-                        <ul>
-                            <li><a href="./settings.html" class="active">Settings</a></li>
-                            <li><a href="./privacy.html">Privacy</a></li>
-                            <li><a href="./index.html">Logout</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-sm-6">
-                        <div id="profilephoto">
-                            <img src="<?= $result["profile_photo"] ?>" >
-                        </div>
-                        <table style="width:100%" class="table table-striped">
-                            <tr>
-                                <td><strong>Name</strong></td>
-                                <td><?= $result["name"] . " " . $result["surname"]?></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Birth Date</strong></td>
-                                <td><?= $result["bdate"]?></td>
-                            </tr>
-                            <tr>
-                                <td><strong>E-Mail</strong></td>
-                                <td><?= $result["email"]?></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Gender</strong></td>
-                                <td><?php if($result["gender"] == "M") echo "Male"; else echo "Female";?></td>
-                            </tr>
-                        </table>
+            <?= $result["name"] . " " . $result["surname"]?>          
+        </div>
+    </div>
+    <div class="row justify-content-center m-5">
+        <div class="row">
+            <div class="col">
+                <img src="<?= $result["profile_photo"] ?>" class="postphoto">
+            </div>
+            <div class="col">
+                <table class="table table-bordered table-primary text-center align-middle">
+                    <tbody>
+                      <tr>
+                        <th class="align-middle" scope="row">Birth Date</th>
+                        <td class="align-middle"><?= $result["bdate"]?></td>
+                      </tr>
+                      <tr>
+                        <th class="align-middle" scope="row">E-mail</th>
+                        <td class="align-middle"><?= $result["email"]?></td>
+                      </tr>
+                      <tr>
+                        <th class="align-middle" scope="row">Gender</th>
+                        <td class="align-middle"><?php if($result["gender"] == "M") echo "Male"; else echo "Female";?></td>
+                      </tr>
+                    </tbody>
+                  </table>
                         <?php
                         
                             if(isset($_GET["status"]))
@@ -154,60 +148,67 @@
                                 echo '<a href="./Helpers/_requestCancel.php?id='. $id .'"><div class="btn btn-danger input-lg btn-block">Cancel Request</div></a>';
                             }
                         ?>
-                    </div>
-                    <div class="col-sm-3 chat-users">
-                        <div class="row">
-                            <h3>Chat</h3>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 chat-user online">
-                                <a href="#">
-                                    <img src="assets/imgs/1.jpg" class="pull-left"/>
-                                    &nbsp;
-                                    Shubham Kumar
-                                </a>
-                            </div>
-                            <div class="col-sm-12 chat-user online">
-                                <a href="#">
-                                    <img src="assets/imgs/2.jpg" class="pull-left"/>
-                                    &nbsp;
-                                    Maninder Kaur
-                                </a>
-                            </div>
-                            <div class="col-sm-12 chat-user online">
-                                <a href="#">
-                                    <img src="assets/imgs/3.jpg" class="pull-left"/>
-                                    &nbsp;
-                                    Divyanshu Gupta
-                                </a>
-                            </div>
-                            <div class="col-sm-12 chat-user">
-                                <a href="#">
-                                    <img src="assets/imgs/4.jpg" class="pull-left"/>
-                                    &nbsp;
-                                    Akshima
-                                </a>
-                            </div>
-                            <div class="col-sm-12 chat-user online">
-                                <a href="#">
-                                    <img src="assets/imgs/5.jpg" class="pull-left"/>
-                                    &nbsp;
-                                    Sourabh Thakur
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            </div>
+            <div class="col">
+                <?php
+                    if($FRIENDSTATUS == FriendManager::ISFRIEND || $FRIENDSTATUS == FriendManager::USER)
+                    {
+                        require_once './Helpers/_db.php';
+                        echo '<div class="h3 text-center">Friends</div>';
+                        $friends = FriendManager::GetFriends($db, $id);
+                        foreach($friends as $friend)
+                        {
+                            echo '<a href="profile.php?id='. $friend["id"] .'">';
+                            echo '<div class="row m-3"><div class="col-3">';
+                            echo '<img src="'. $friend["profile_photo"] .'" class="miniphoto"/>';
+                            echo '</div><div class="col text-left">' . $friend["name"] . " " . $friend["surname"];
+                            echo '</div></div></a>';
+                        }                                    
+                    }
+                    else
+                    {
+                        echo '<div class="h3 text-center">You are not allowed to see friends.</div>';
+
+                    }
+
+                ?>
             </div>
         </div>
-        <div class="footer no-shadow">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-sm-12">
-                        &copy; Facebook 2017.
-                    </div>
-                </div>
-            </div>
+    </div>
+    <div class="row display-3 text-center justify-content-center text-primary border border-info">
+        <div class="col">POSTS            
         </div>
-    </body>
+    </div>
+    <?php
+        require_once './Helpers/PostManager.php';
+        $posts = PostManager::GetPostsOf($db, $id);
+        foreach($posts as $post)
+        {
+            echo '<div class="row justify-content-center ">';
+            echo '<div class="col-6 mt-lg-5 alert alert-dark border">';
+            echo '<a href="profile.php?id='. $result["id"] .'">';
+            echo '<div class="row m-3"><div class="col-1"><img src="'. $result["profile_photo"] .'" class="photo"/></div>';
+            echo '<div class="col text-left">'. $result["name"] . ' ' . $result["surname"] .'</a><br>';
+            echo $post["date"] . '</div></div>';
+            if($post["photo"] != "")
+            {
+                echo '<div class="row"><img src="' . $post["photo"] . '" class="postphoto"></div>';
+            }
+            echo '<div class="row"><div class="col p-3  alert alert-primary m-5 text-justify"">';
+            echo $post["text"];
+            echo '</div></div>';
+            echo '<div class="row">';
+            echo '<ul class="list-inline mr-auto ml-auto mb-3">';
+            echo '<li class="list-inline-item">Like</li>';
+            echo '<li class="list-inline-item">Dislike</li>';
+            echo '<li class="list-inline-item">Dislike</li>';
+            echo '<li class="list-inline-item">Comment</li>';
+            echo '<li class="list-inline-item">X Dislikes</li>';
+            echo '<li class="list-inline-item">X Comments</li>';
+            echo '</ul></div></div></div>';
+        }
+    ?>
+</div>
+
+</body>
 </html>

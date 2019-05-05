@@ -35,6 +35,21 @@ class FriendManager
     
     public static function GetFriends($db, $id)
     {
-        
+        try {
+            $sql1 = "select receiver_id id from friend where sender_id = $id";
+            $sql2 = "select sender_id id from friend where receiver_id = $id";
+            $friends = array_merge($db->query($sql1, PDO::FETCH_ASSOC)->fetchAll() , $db->query($sql2, PDO::FETCH_ASSOC)->fetchAll());
+            $friendList = "(";
+            foreach($friends as $friend)
+            {
+                $friendList .= $friend["id"] . ',';
+            }
+            $friendList .= '0)';
+            $sql = "select * from user where id in $friendList";
+            return ($db->query($sql, PDO::FETCH_ASSOC)->fetchAll());
+            
+        } catch (Exception $ex) {
+            return array();
+        }
     }
 }
