@@ -58,7 +58,7 @@
                     require_once './Helpers/_db.php';
                     $stmt = $db->prepare("insert into user (name, surname, email, bdate, gender, pass, profile_photo) values (?,?,?,?,?,?,?)") ;
                     $stmt->execute( [$name, $surname, $email, $date, $gender, $pass, $result["filepath"]]) ;
-                    header("Location: login.php?newUser");
+                    header("Location: index.php?newUser");
                     exit ;
                 } catch (Exception $ex) {
                    $error = true ;
@@ -101,6 +101,7 @@
         <div class="col-4 text-center font-weight-bold display-4">
           Facebook
         </div>
+        <?php if(isset($_GET["newUser"])) echo '<div class="col-3 text-center font-weight-bold" style="font-size:40px;">You can now log in</div>'?>
         <div class="col-5 h-100">
             <form action="" method="POST">
                 <input type="text" name="email" placeholder="Email Address"/>
