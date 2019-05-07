@@ -38,52 +38,128 @@
         <script src="js/jquery-3.4.1.min.js" type="text/javascript"></script>
         <script>
             $(function(){
+                var lastPostId = -1;
+                var isFetching = false;
                 
-                $(".like").click(function(){
-                    var post_id = parseInt($(this).attr("value"));
-                    var type = parseInt($(this).attr("type"));
-                    console.log(post_id + "  " + type);
-                    if($(this).find("li").hasClass("checked"))
-                    {
-                        var datap = new Object();
-                        datap.user_id = <?=$_SESSION["user"]["id"]?>;
-                        datap.post_id = post_id;
-                        datap.type = type;
-                        datap.deleteOnly = true;
-                        LikeHandler(datap);                            
-                        $(this).find("li").removeClass("checked");
-                    }
-                    else
-                    {
-                        var datap = new Object();
-                        datap.user_id = <?=$_SESSION["user"]["id"]?>;
-                        datap.post_id = post_id;
-                        datap.type = type;
-                        LikeHandler(datap);
-                        var thisClass = $(this).attr("class").replace(" ", ".");
-                        $("." + thisClass).find("li").removeClass("checked");
-                        $(this).find("li").addClass("checked");
-                        
-
-
-                    }
-                });
-                
+                var datap = new Object();                    
+                datap.user_id = <?=$_SESSION["user"]["id"]?>;
+                datap.last_post_id = lastPostId;
+                isFetching = true;
+                PostHandler(datap);
                 $(window).scroll(function() {
-                   if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
-                       console.log("bottom");
+                    if(isFetching)
+                        return;
+                   if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {   
+                        var datap = new Object();                    
+                        datap.user_id = <?=$_SESSION["user"]["id"]?>;
+                        datap.last_post_id = lastPostId;
+                        
+                        console.log("bottom");
+                        isFetching = true;
+                        PostHandler(datap);
                    }
                 });
+                
+                function PostHandler(datap){
+                    $.ajax({
+                        type: "POST",
+                        url: "./Helpers/_getPosts.php",
+                        data: datap,
+                        success: function(x){
+                            console.log(x);
+                            CreatePosts(x);
+                            isFetching = false;
+                        }
+                    });
+                
+                }
+                
                 function LikeHandler(datap) {
-                        $.ajax({
-                                type: "POST",
-                                url: "./Helpers/_likeHandler.php",
-                                data: datap,
-                                success: function(x){
-                                    $("#" + datap.post_id + " .likecount").html(x.likecount + " Likes");
-                                    $("#" + datap.post_id + " .dislikecount").html(x.dislikecount + " Dislikes");
-                                }
-                        });
+                    $.ajax({
+                        type: "POST",
+                        url: "./Helpers/_likeHandler.php",
+                        data: datap,
+                        success: function(x){
+                            $("#" + datap.post_id + " .likecount").html(x.likecount + " Likes");
+                            $("#" + datap.post_id + " .dislikecount").html(x.dislikecount + " Dislikes");
+                        }
+                    });
+                }
+                
+                function CreatePosts(posts)
+                {
+                    var html = "";
+                    
+                    for (var key in posts) {
+                        if (!posts.hasOwnProperty(key)) continue;
+
+                        var obj = posts[key];
+                        html += PostHTML(obj);
+                        lastPostId = obj["id"];
+                    }
+                    if(html != "")
+                        $("#container > div:last-child").after(html);
+                    else
+                    {   
+                        $("#container > div:last-child").after('<div class="row justify-content-center display-3 text-primary border border-info mb-5"><div class="col text-center">NO MORE POSTS</div></div>')
+                        $(window).unbind();                        
+                    }
+                        
+                    $(".like").unbind();
+                    $(".like").click(function(){
+                        var post_id = parseInt($(this).attr("value"));
+                        var type = parseInt($(this).attr("type"));
+                        console.log(post_id + "  " + type);
+                        if($(this).find("li").hasClass("checked"))
+                        {
+                            var datap = new Object();
+                            datap.user_id = <?=$_SESSION["user"]["id"]?>;
+                            datap.post_id = post_id;
+                            datap.type = type;
+                            datap.deleteOnly = true;
+                            LikeHandler(datap);                            
+                            $(this).find("li").removeClass("checked");
+                        }
+                        else
+                        {
+                            var datap = new Object();
+                            datap.user_id = <?=$_SESSION["user"]["id"]?>;
+                            datap.post_id = post_id;
+                            datap.type = type;
+                            LikeHandler(datap);
+                            var thisClass = $(this).attr("class").replace(" ", ".");
+                            $("." + thisClass).find("li").removeClass("checked");
+                            $(this).find("li").addClass("checked");
+                        }
+                    });
+                }
+                
+                function PostHTML(post)
+                {
+                    var html = "";
+                    html += '<div class="row justify-content-center" id="'+post["id"]+'">';
+                    html += '<div class="col-6 mt-lg-5 alert alert-dark border">';
+                    html += '<a href="profile+php?id='+ post["user_id"] +'">';
+                    html += '<div class="row m-3"><div class="col-1"><img src="'+ post["user"]["profile_photo"] +'" class="photo"/></div>';
+                    html += '<div class="col text-left">'+ post["user"]["name"] + ' ' + post["user"]["surname"] +'</a><br>';
+                    html += post["date"] + '</div></div>';
+                    if(post["photo"] != "")
+                    {
+                        html += '<div class="row"><img src="' + post["photo"] + '" class="postphoto"></div>';
+                    }
+                    html += '<div class="row"><div class="col p-3  alert alert-primary m-5 text-justify"">';
+                    html += post["text"];
+                    html += '</div></div>';
+                    html += '<div class="row">';
+                    html += '<ul class="list-inline mr-auto ml-auto mb-3">';
+                    like = post["isLiked"] == 1 ? " checked" : "";
+                    dislike = post["isLiked"] == -1 ? " checked" : "";
+                    html += '<button type="1" class="like '+ post["id"] +'" value="'+ post["id"] +'"><li class="list-inline-item '+ like +'">Like</li></button>';
+                    html += '<button type="-1" class="like '+ post["id"] +'" value="'+ post["id"] +'"><li class="list-inline-item '+ dislike +'">Dislike</li></button>';
+                    html += '<button class="likecount" value="'+ post["id"] +'"><li class="list-inline-item">'+ post["likecount"] +' Likes</li></button>';
+                    html += '<button class="dislikecount" value="'+ post["id"] +'"><li class="list-inline-item">'+ post["dislikecount"] +' Dislikes</li></button>';
+                    html += '</ul></div></div></div>';
+                    return html;
                 }
             });
 
@@ -113,7 +189,7 @@
     <title></title>
 </head>
 <body>
-<div class="container-fluid" id="div">
+<div class="container-fluid" id="container">
     <?php require("./Helpers/_header.php"); ?>
     <div class="row justify-content-center">
         <div class="col-6 mt-lg-5 bg-light border">
@@ -139,35 +215,6 @@
             </form>       
         </div>
     </div>
-    <?php
-        require_once './Helpers/PostManager.php';
-        $posts = PostManager::GetPostsOfFriendsOf($db, $_SESSION["user"]["id"]);
-        foreach($posts as $post)
-        {
-            echo '<div class="row justify-content-center" id="'.$post["id"].'">';
-            echo '<div class="col-6 mt-lg-5 alert alert-dark border">';
-            echo '<a href="profile.php?id='. $post["user_id"] .'">';
-            echo '<div class="row m-3"><div class="col-1"><img src="'. $post["user"]["profile_photo"] .'" class="photo"/></div>';
-            echo '<div class="col text-left">'. $post["user"]["name"] . ' ' . $post["user"]["surname"] .'</a><br>';
-            echo $post["date"] . '</div></div>';
-            if($post["photo"] != "")
-            {
-                echo '<div class="row"><img src="' . $post["photo"] . '" class="postphoto"></div>';
-            }
-            echo '<div class="row"><div class="col p-3  alert alert-primary m-5 text-justify"">';
-            echo $post["text"];
-            echo '</div></div>';
-            echo '<div class="row">';
-            echo '<ul class="list-inline mr-auto ml-auto mb-3">';
-            $like = $post["isLiked"] == 1 ? " checked" : "";
-            $dislike = $post["isLiked"] == -1 ? " checked" : "";
-            echo '<button type="1" class="like '. $post["id"] .'" value="'. $post["id"] .'"><li class="list-inline-item '. $like .'">Like</li></button>';
-            echo '<button type="-1" class="like '. $post["id"] .'" value="'. $post["id"] .'"><li class="list-inline-item '. $dislike .'">Dislike</li></button>';
-            echo '<button class="likecount" value="'. $post["id"] .'"><li class="list-inline-item">'. $post["likecount"] .' Likes</li></button>';
-            echo '<button class="dislikecount" value="'. $post["id"] .'"><li class="list-inline-item">'. $post["dislikecount"] .' Dislikes</li></button>';
-            echo '</ul></div></div></div>';
-        }
-    ?>
 </div>
 </body>
 </html>
