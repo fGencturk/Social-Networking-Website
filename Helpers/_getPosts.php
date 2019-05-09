@@ -22,6 +22,10 @@
     }   
     require_once 'PostManager.php';
     require_once '_db.php';
-    $posts = PostManager::Get10PostsOfFriendsOf($db, $user_id, $post_id);
+    if(!isset($_POST["onlyUser"]))
+        $posts = PostManager::Get10PostsOfFriendsOf($db, $user_id, $post_id);
+    else
+        $posts = PostManager::GetPostsOf($db, $user_id, $post_id);
+        
     echo json_encode($posts) ;
     return;

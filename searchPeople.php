@@ -49,6 +49,8 @@
 <div class="container-fluid">
     <?php require("./Helpers/_header.php"); ?>
     <?php
+        if(count($users) == 0)
+            echo '<div class="row justify-content-center display-3 text-primary border border-info mb-5"><div class="col text-center">NO USER FOUND</div></div>';
         foreach($users as $user)
         {
             echo '<div class="row justify-content-center">';
