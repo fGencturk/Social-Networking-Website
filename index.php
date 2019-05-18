@@ -102,6 +102,7 @@
           Facebook
         </div>
         <?php if(isset($_GET["newUser"])) echo '<div class="col-3 text-center font-weight-bold" style="font-size:40px;">You can now log in</div>'?>
+        <?php if(isset($_GET["authError"])) echo '<div class="col-3 text-center font-weight-bold" style="font-size:32px;">Authentication required</div>'?>
         <div class="col-5 h-100">
             <form action="" method="POST">
                 <input type="text" name="email" placeholder="Email Address"/>

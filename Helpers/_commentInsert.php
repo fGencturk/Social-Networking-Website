@@ -2,14 +2,15 @@
     header("Content-Type: application/json") ;
     require("_auth.php");
     
-    $data = ["result" => false];   
+    $data = ["result" => false];
     
-    if(!isset($_POST["post_id"]) || !isset($_POST["user_id"]) || !isset($_POST["text"]))
+    
+    if(!isset($_POST["post_id"]) || !isset($_POST["text"]))
     {
         echo json_encode($data) ;
         return;
     }    
-    $user_id = $_POST["user_id"];
+    $user_id = $_SESSION["user"]["id"];
     if(!filter_var($user_id, FILTER_VALIDATE_INT))
     {
         echo json_encode($data) ;
