@@ -29,7 +29,7 @@
     {
         $user_id = $_POST["user_id"] ?? -1;
         if(filter_var($user_id, FILTER_VALIDATE_INT))
-            $posts = PostManager::GetPostsOf($db, $user_id, $post_id);
+            $posts = PostManager::GetPostsOf($db, $user_id, $post_id, $_SESSION["user"]["id"]);
         
     }
         

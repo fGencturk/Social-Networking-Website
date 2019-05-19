@@ -15,33 +15,37 @@
         $name = filter_var($_POST["name"],FILTER_SANITIZE_SPECIAL_CHARS);
         $surname = filter_var($_POST["surname"],FILTER_SANITIZE_SPECIAL_CHARS);
         if (!preg_match("/^[a-zA-Z]{1,}$/",$name)) {
-            $registerError .= "Name is invalid!"; 
+            $registerError .= "Name should consist of letters."; 
         }
         if (!preg_match("/^[a-zA-Z]{1,}$/",$surname)) {
-            $registerError .= "<br>Surname is invalid!"; 
+            $registerError .= "<br>Surname should consist of letters."; 
         }
         $email = filter_var($_POST["email"],FILTER_SANITIZE_SPECIAL_CHARS);
         if(!filter_var($email, FILTER_VALIDATE_EMAIL))
         {
-            $registerError .= "<br>Email is invalid!";
+            $registerError .= "<br>Email is invalid.";
         }
         $day = $_POST["day"];
         $month = $_POST["month"];
         $year = $_POST["year"];
         if($day  == 0 || $month == 0 || $year == 0)
         {
-            $registerError .= "<br>Birth day is invalid";
+            $registerError .= "<br>Birthday is invalid.";
         }
         $bdate = $_POST["year"] . "-" . $_POST["month"] . "-" . $_POST["day"];
         if(!isset($_POST["gender"]))
         {
-            $registerError .= "<br>Select a gender";
+            $registerError .= "<br>Select a gender.";
         }
         else
         {
             $gender = $_POST["gender"];
         }
         $pass = $_POST["pass"];
+        if(strlen($pass) < 4)
+        {
+            $registerError .= "<br>Password should consist of at least 4 characters.";
+        }
         
         
         if($registerError == "")
@@ -99,7 +103,7 @@
 <div class="container-fluid bg-info" id="background">
     <div class="row justify-content-between p-2 bg-primary text-white align-items-center">
         <div class="col-4 text-center font-weight-bold display-4">
-          Facebook
+          CTISBook
         </div>
         <?php if(isset($_GET["newUser"])) echo '<div class="col-3 text-center font-weight-bold" style="font-size:40px;">You can now log in</div>'?>
         <?php if(isset($_GET["authError"])) echo '<div class="col-3 text-center font-weight-bold" style="font-size:32px;">Authentication required</div>'?>
@@ -116,7 +120,6 @@
         <div class="col-4 text-center mt-lg-5 bg-primary">
           <div class="signup-form  text-white p-5">
                 <h1>Create a new account</h1>
-                <p class="h3">It's free and always help you waste your time ;-)</p>
                 <form action="" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <div class="row">
@@ -219,7 +222,7 @@
                         Profile Picture(Optional) : <input type="file" name="p_image" >
                     </div>
                     <div class="form-group">
-                        <small class="text-mute">By clicking Create Account, you agree to our Terms and confirm that you have read our Data Policy, including our Cookie Use Policy. You may receive SMS message notifications from Facebook and can opt out at any time.</small>
+                        <small class="text-mute">By clicking Create Account, you agree to our Terms and confirm that you have read our Data Policy, including our Cookie Use Policy. You may receive SMS message notifications from CTISBook and can opt out at any time.</small>
                     </div>
                     <div class="form-group">
                         <input name="btnRegister" type="submit" value="Create Account" class="btn btn-info input-lg"/>

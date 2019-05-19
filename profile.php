@@ -54,7 +54,14 @@
                 datap.user_id = <?= $result["id"] ?>;
                 datap.onlyUser = true;
                 isFetching = true;
-                PostHandler(datap);
+                <?php
+                
+                    if($FRIENDSTATUS == FriendManager::ISFRIEND || $FRIENDSTATUS == FriendManager::USER)
+                    {
+                        echo 'PostHandler(datap)';
+                    }
+                ?>
+                
                 $(window).scroll(function() {
                     if(isFetching)
                         return;
@@ -171,13 +178,12 @@
                     });
                     
                 }
-                
                 function PostHTML(post)
                 {
                     var html = "";
                     html += '<div class="row justify-content-center" id="'+post["id"]+'">';
                     html += '<div class="col-6 mt-lg-5 alert alert-dark border">';
-                    html += '<a href="profile+php?id='+ post["user_id"] +'">';
+                    html += '<a href="profile.php?id='+ post["user_id"] +'">';
                     html += '<div class="row m-3"><div class="col-1"><img src="'+ post["user"]["profile_photo"] +'" class="photo"/></div>';
                     html += '<div class="col text-left">'+ post["user"]["name"] + ' ' + post["user"]["surname"] +'</a><br>';
                     html += post["date"] + '</div></div>';
@@ -363,7 +369,19 @@
         </div>
     </div>
     <div class="row display-3 text-center justify-content-center text-primary border border-info">
-        <div class="col">POSTS            
+        <div class="col">
+            <?php
+            
+                if($FRIENDSTATUS == FriendManager::ISFRIEND || $FRIENDSTATUS == FriendManager::USER)
+                {
+                    echo 'POSTS';                              
+                }
+                else
+                {
+                    echo 'YOU ARE NOT ALLOWED TO SEE POSTS.';
+
+                }
+            ?>
         </div>
     </div>
 </div>

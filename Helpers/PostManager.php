@@ -1,7 +1,7 @@
 <?php
 class PostManager {
     
-    public static function GetPostsOf($db, $id, $last_post_id)
+    public static function GetPostsOf($db, $id, $last_post_id, $active_user)
     {        
         try{
             if($last_post_id != -1)
@@ -16,7 +16,7 @@ class PostManager {
             $likes = array_map('reset', $db->query($sql, PDO::FETCH_ASSOC)->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC));
             $sql = "select post_id, count(*) dislike from plike where type = -1 group by post_id";
             $dislikes = array_map('reset', $db->query($sql, PDO::FETCH_ASSOC)->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC));
-            $sql = "select post_id, type from plike where user_id = $id";
+            $sql = "select post_id, type from plike where user_id = $active_user";
             $isLiked = array_map('reset', $db->query($sql, PDO::FETCH_ASSOC)->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_ASSOC));
             for($i = 0; $i < count($posts); $i++)
             {

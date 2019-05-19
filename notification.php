@@ -43,9 +43,9 @@
             echo '<div class="row justify-content-center">';
             echo '<div class="col-6 mt-lg-5 bg-light border">';
             echo '<div class="row m-3">';
-            echo '<div class="col-3">';
-            echo '</div><a href="'. $not["link"] .'"><div class="col text-left text-primary">'. $not["text"];
-            echo '</div></a><a href="./Helpers/_notificationDelete.php?id=' . $not["id"] . '"><img src="./images/delete.png" style="width:30px"></a>';
+            echo '<div class="col-1">';
+            echo '</div><a href="./Helpers/_notificationDelete.php?id=' . $not["id"] . '"><img src="./images/delete.png" style="width:30px"></a><a href="'. $not["link"] .'"><div class="col text-left text-primary">'. $not["text"];
+            echo '</div></a>';
             echo '<div class="col text-right">'. $not["date"] .'</div>' .'</div></div></div>';
         }
     ?>

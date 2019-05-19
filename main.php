@@ -19,7 +19,7 @@
                 header("Location: main.php?newPost");
                 exit ;
             } catch (Exception $ex) {
-               $error = true ;
+               $error = "An error occurred in the database." ;
             }  
         }
         else

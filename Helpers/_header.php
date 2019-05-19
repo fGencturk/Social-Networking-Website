@@ -2,7 +2,7 @@
     echo '<div class="row justify-content-between p-2 bg-primary text-white align-items-center">
                   <a href="./main.php">
                 <div class="col-4 text-right font-weight-bold display-4 text-white">
-                    Facebook
+                    CTISBook
                 </div>
                   </a>
                 <div class="col-4">
