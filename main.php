@@ -41,8 +41,7 @@
                 var lastPostId = -1;
                 var isFetching = false;
                 
-                var datap = new Object();                    
-                datap.user_id = <?=$_SESSION["user"]["id"]?>;
+                var datap = new Object();
                 datap.last_post_id = lastPostId;
                 isFetching = true;
                 PostHandler(datap);
@@ -50,8 +49,7 @@
                     if(isFetching)
                         return;
                    if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {   
-                        var datap = new Object();                    
-                        datap.user_id = <?=$_SESSION["user"]["id"]?>;
+                        var datap = new Object();
                         datap.last_post_id = lastPostId;
                         
                         console.log("bottom");
@@ -59,8 +57,6 @@
                         PostHandler(datap);
                    }
                 });
-                
-                
                 
                 function CommentHandler(datap)
                 {

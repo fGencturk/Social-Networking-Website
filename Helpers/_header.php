@@ -21,7 +21,12 @@
                     <a href="profile.php">
                         <div class="btn btn-info"><img class="miniphoto" src="'. $_SESSION["user"]["profile_photo"] .'"> '. $_SESSION["user"]["name"] . " " . $_SESSION["user"]["surname"] .'</div>
                     </a>
-                    <div class="btn btn-info p-2">Friends</div>
+                    <a href="friends.php">
+                        <div class="btn btn-info p-2">Friends</div>
+                    </a>
+                    <a href="notification.php">
+                        <div class="btn btn-info p-2">Notifications</div>
+                    </a>
                     <a href="./Helpers/_logout.php">
                         <div class="btn btn-info p-2">Logout</div>
                     </a>

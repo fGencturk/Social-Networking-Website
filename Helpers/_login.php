@@ -19,5 +19,5 @@
            exit ; 
           }
        }
-       header("Location: login.php?loginError");
+       header("Location: index.php?loginError");
   }

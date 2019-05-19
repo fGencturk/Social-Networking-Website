@@ -30,5 +30,10 @@
     $sql = "insert into comment(user_id,post_id,text) values(?, ?, ?)";
     $stmt = $db->prepare($sql) ;
     $stmt->execute( [$user_id, $post_id, $text]) ;    
-    echo json_encode($data);    
+    echo json_encode($data);
+    $sql = "select user_id from post where id = $post_id";
+    $receiver_id = $db->query($sql, PDO::FETCH_ASSOC)->fetchAll()[0]["user_id"];
+    $sql = "insert into notification(text,link,receiver_id) values('". $_SESSION["user"]["name"] ." commented your post.', 'post.php?id=". $post_id ."', $receiver_id)";
+    $stmt = $db->prepare($sql) ;
+    $stmt->execute();    
     return;

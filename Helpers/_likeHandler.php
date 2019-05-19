@@ -41,6 +41,12 @@
     {
         $sql = "insert into plike(user_id,post_id,type) values($user_id,$post_id,$type)";
         $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $typetext = $type == 1 ? " liked " : " disliked ";
+        $sql = "select user_id from post where id = $post_id";
+        $receiver_id = $db->query($sql, PDO::FETCH_ASSOC)->fetchAll()[0]["user_id"];
+        $sql = "insert into notification(text,link,receiver_id) values('". $_SESSION["user"]["name"] ." ". $_SESSION["user"]["surname"] . $typetext ."your post.', 'post.php?id=". $post_id ."', $receiver_id)";
+        $stmt = $db->prepare($sql) ;
         $stmt->execute();        
     }
     $sql = "select count(*) plike from plike where post_id = $post_id and type=1";

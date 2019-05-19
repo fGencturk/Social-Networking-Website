@@ -49,9 +49,9 @@
                 var lastPostId = -1;
                 var isFetching = false;
                 
-                var datap = new Object();                    
-                datap.user_id = <?=$result["id"]?>;
+                var datap = new Object();
                 datap.last_post_id = lastPostId;
+                datap.user_id = <?= $result["id"] ?>;
                 datap.onlyUser = true;
                 isFetching = true;
                 PostHandler(datap);
@@ -59,9 +59,9 @@
                     if(isFetching)
                         return;
                    if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {   
-                        var datap = new Object();                    
-                        datap.user_id = <?=$result["id"]?>;
+                        var datap = new Object();
                         datap.last_post_id = lastPostId;
+                        datap.user_id = <?= $result["id"] ?>;
                         datap.onlyUser = true;
                         
                         console.log("bottom");
@@ -141,7 +141,6 @@
                         if($(this).find("li").hasClass("checked"))
                         {
                             var datap = new Object();
-                            datap.user_id = <?=$result["id"]?>;
                             datap.post_id = post_id;
                             datap.type = type;
                             datap.deleteOnly = true;
@@ -151,7 +150,6 @@
                         else
                         {
                             var datap = new Object();
-                            datap.user_id = <?=$result["id"]?>;
                             datap.post_id = post_id;
                             datap.type = type;
                             LikeHandler(datap);
@@ -222,6 +220,9 @@
 
         </script>
         <style>
+            button {
+                margin:0 5px;
+            }
             .photo {
                 width:60px;
                 height:60px;
@@ -235,8 +236,16 @@
                 width:30px;
                 height:30px;
             }
+            .checked {
+                font-weight:bold;
+                color:blue;
+            }
+            .commentText {
+                margin-left:10px;
+                font-size:14px;
+            }
         </style>
-    <title></title>
+    <title><?= $result["name"] . " " . $result["surname"]?>   </title>
 </head>
 <body>
 <div class="container-fluid" id="container">

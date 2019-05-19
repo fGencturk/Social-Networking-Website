@@ -18,6 +18,9 @@
         $stmt->execute( [$_SESSION["user"]["id"], $id]) ;
         $stmt->execute( [$id, $_SESSION["user"]["id"]]) ;
         $status = FriendManager::NOTFRIEND;
+        $sql = "insert into notification(text,link,receiver_id) values('". $_SESSION["user"]["name"] ." ". $_SESSION["user"]["surname"] ." removed you from his/her friends.', 'profile.php?id=". $_SESSION["user"]["id"] ."', $id)";
+        $stmt = $db->prepare($sql) ;
+        $stmt->execute();  
         header("Location: ../profile.php?id=$id&status=$status");
         exit ;
     } catch (Exception $ex) {

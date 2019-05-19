@@ -74,4 +74,33 @@ class PostManager {
             return array();
         }        
     }    
+    
+    public static function GetPost($db, $id, $user_id)
+    {
+        try {
+            $sql = "select post.id,text,photo,date,name,surname,profile_photo,user_id,date from post, user where post.id = $id and user_id = user.id";
+            $post = $db->query($sql, PDO::FETCH_ASSOC)->fetchAll();
+            if(count($post) == 0)
+                return null;
+            $post = $post[0];
+            $sql = "select user_id,name, surname, profile_photo, comment.text from user,comment where post_id = $id and user.id = user_id";
+            $post["comments"] = $db->query($sql, PDO::FETCH_ASSOC)->fetchAll();
+            $sql = "select post_id, type from plike where user_id = $user_id and post_id = $id";
+            $post["isLiked"] = $db->query($sql, PDO::FETCH_ASSOC)->fetchAll();
+            $sql = "select count(*) cnt from plike where post_id = $id and type = 1";
+            $post["likecount"] = $db->query($sql, PDO::FETCH_ASSOC)->fetchAll()[0]["cnt"];
+            $sql = "select count(*) cnt from plike where post_id = $id and type = -1";
+            $post["dislikecount"] = $db->query($sql, PDO::FETCH_ASSOC)->fetchAll()[0]["cnt"];
+            if(count($post["isLiked"]) == 0)
+                $post["isLiked"] = 0;
+            else
+                $post["isLiked"] = $post["isLiked"][0]["type"];
+            return $post;
+            
+            
+            
+        } catch (Exception $ex) {
+            return null;
+        }
+    }
 }

@@ -17,6 +17,9 @@
         $stmt = $db->prepare("insert into friend_request values (?,?)") ;
         $stmt->execute( [$_SESSION["user"]["id"], $id]) ;
         $status = FriendManager::SENTREQUEST;
+        $sql = "insert into notification(text,link,receiver_id) values('". $_SESSION["user"]["name"] ." ". $_SESSION["user"]["surname"] ." sent friend request.', 'profile.php?id=". $_SESSION["user"]["id"] ."', $id)";
+        $stmt = $db->prepare($sql) ;
+        $stmt->execute();    
         header("Location: ../profile.php?id=$id&status=$status");
         exit ;
     } catch (Exception $ex) {
